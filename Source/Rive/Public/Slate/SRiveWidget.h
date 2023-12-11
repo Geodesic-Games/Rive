@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Widgets/SCompoundWidget.h"
 
+class URiveFile;
+class SRiveWidgetView;
+
 /**
  * 
  */
@@ -18,5 +21,9 @@ public:
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */
-	void Construct(const FArguments& InArgs);
+	void Construct(const FArguments& InArgs, TSoftObjectPtr<URiveFile> InRiveFile);
+	
+private:
+	/** Reference to Avalanche View */
+	TSharedPtr<SRiveWidgetView> RiveWidgetView;
 };

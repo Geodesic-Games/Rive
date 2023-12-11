@@ -23,10 +23,22 @@ void URiveWidget::ReleaseSlateResources(bool bReleaseChildren)
 
 TSharedRef<SWidget> URiveWidget::RebuildWidget()
 {
-	RiveWidget = SNew(SRiveWidget);
+	if ( IsDesignTime() )
+	{
+		return SNew(SBox)
+			.HAlign(HAlign_Center)
+			.VAlign(VAlign_Center)
+			[
+				SNew(STextBlock)
+				.Text(LOCTEXT("Rive view", "Rive view"))
+			];
+	}
+	else
+	{
+		RiveWidget = SNew(SRiveWidget, RiveFile);
 
-	return RiveWidget.ToSharedRef();
+		return RiveWidget.ToSharedRef();
+	}
 }
-
 
 #undef LOCTEXT_NAMESPACE

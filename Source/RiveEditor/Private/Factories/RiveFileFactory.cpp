@@ -29,7 +29,8 @@ UObject* URiveFileFactory::FactoryCreateFile(UClass* InClass, UObject* InParent,
 	
 	URiveFile* RiveFile = NewObject<URiveFile>(InParent, InClass, InName, InFlags | RF_Public);
 	check(RiveFile);
-
+	RiveFile->Initialize();
+	
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->BroadcastAssetPostImport(this, RiveFile);
 	return RiveFile;
 }

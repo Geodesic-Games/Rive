@@ -7,6 +7,7 @@
 #include "RiveWidget.generated.h"
 
 class SRiveWidget;
+class URiveFile;
 
 /**
  * 
@@ -15,6 +16,11 @@ UCLASS()
 class RIVE_API URiveWidget : public UWidget
 {
 	GENERATED_BODY()
+
+public:
+	/** Reference to Ava Blueprint Asset */
+	UPROPERTY(EditAnywhere, Category = Avalanche)
+	TSoftObjectPtr<URiveFile> RiveFile;
 
 protected:
 	// UWidget interface
