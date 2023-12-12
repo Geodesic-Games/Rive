@@ -39,9 +39,6 @@
 *.VC.db
 *.VC.opendb
 
-# Temp Exeption 
-!Binaries/ThirdParty/RiveLibrary/Win64/*
-
 
 *.dll.recipe
 *.exp
@@ -58,3 +55,6 @@
 
 Binaries/*
 Intermediate/*
+
+# Temp Exeption 
+!ExampleLibrary.dll
