@@ -20,7 +20,9 @@ class RIVE_API URiveWidget : public UWidget
 public:
 	/** Reference to Ava Blueprint Asset */
 	UPROPERTY(EditAnywhere, Category = Avalanche)
-	TSoftObjectPtr<URiveFile> RiveFile;
+	TObjectPtr<URiveFile> RiveFile;
+
+	void SetRiveFile(URiveFile* InRiveFile);
 
 protected:
 	// UWidget interface

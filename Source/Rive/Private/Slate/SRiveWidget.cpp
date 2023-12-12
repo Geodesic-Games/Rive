@@ -20,4 +20,9 @@ void SRiveWidget::Construct(const FArguments& InArgs, TSoftObjectPtr<URiveFile> 
 	];
 }
 
+void SRiveWidget::SetRiveFile(URiveFile* InRiveFile)
+{
+	RiveFile = InRiveFile;
+}
+
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

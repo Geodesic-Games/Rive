@@ -48,7 +48,6 @@ public class Rive : ModuleRules
 			}
 			);
 		
-		
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{

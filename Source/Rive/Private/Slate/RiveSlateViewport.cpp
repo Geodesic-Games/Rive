@@ -1,6 +1,7 @@
 #include "RiveSlateViewport.h"
 
 #include "CanvasTypes.h"
+#include "EngineModule.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
 #include "RiveFile.h"
@@ -8,33 +9,17 @@
 #include "Async/Async.h"
 #include "Slate/SlateTextures.h"
 #include "Textures/SlateUpdatableTexture.h"
+#include "MediaShaders.h"
+#include "RiveRendererUtils.h"
+#include "ScreenPass.h"
 
-// DUPLICATION
-namespace 
-{
-	UTextureRenderTarget2D* CreateDefaultRenderTarget(FIntPoint InTargetSize)
-	{
-		UTextureRenderTarget2D* const RenderTarget = NewObject<UTextureRenderTarget2D>(GetTransientPackage());
-		RenderTarget->bForceLinearGamma = false;
-		RenderTarget->bAutoGenerateMips = false;
-		RenderTarget->OverrideFormat = EPixelFormat::PF_B8G8R8A8;
-		RenderTarget->ResizeTarget(InTargetSize.X, InTargetSize.Y);
-		return RenderTarget;
-	}
-
-	FIntPoint GetRenderTargetSize(UTextureRenderTarget2D* InRenderTarget)
-	{
-		check(IsValid(InRenderTarget));
-		return FIntPoint(InRenderTarget->SizeX, InRenderTarget->SizeY);
-	}
-}
 
 FRiveSlateViewport::FRiveSlateViewport(TSoftObjectPtr<URiveFile> InRiveFile, const TSharedRef<SRiveWidgetView>& InWidgetView)
 {
 	RiveFile = InRiveFile;
 	WidgetViewWeakPtr = InWidgetView;
 
-	RiveSlateRenderTarget = TStrongObjectPtr<UTextureRenderTarget2D>(CreateDefaultRenderTarget(RenderingSize));
+	RiveSlateRenderTarget = TStrongObjectPtr(FRiveRendererUtils::CreateDefaultRenderTarget(RenderingSize));
 
 	if (FSlateRenderer* const Renderer = GetRenderer())
 	{
@@ -109,53 +94,27 @@ void FRiveSlateViewport::Tick( const FGeometry& AllottedGeometry, double InCurre
 	
 	if (RiveFile.IsValid())
 	{
+		RiveFile->RequestRendering();
+		
 		// Check it later
 		UTextureRenderTarget2D* RiveTexture = RiveFile->GetRenderTarget();
-		FLinearColor DebugColor = RiveFile->GetDebugColor();
-		
 		FTextureRenderTargetResource* RiveRenderTargetResource = RiveTexture->GameThread_GetRenderTargetResource();
 		FTextureRenderTargetResource* RiveSlateRenderTargetResource = RiveSlateRenderTarget->GameThread_GetRenderTargetResource();
 	
 		ENQUEUE_RENDER_COMMAND(CopyRenderTexture)(
-			[this, RiveRenderTargetResource, RiveSlateRenderTargetResource, DebugColor](FRHICommandListImmediate& RHICmdList)
+			[this, RiveRenderTargetResource, RiveSlateRenderTargetResource](FRHICommandListImmediate& RHICmdList)
 			{
-				FRDGBuilder GraphBuilder(RHICmdList);
-				// Move To Renderer and render separately, just copy here
 
 				// JUST for testing here
-				FCanvas Canvas(RiveRenderTargetResource, nullptr, FGameTime(), GMaxRHIFeatureLevel);
-				Canvas.Clear(DebugColor);
-				
-				// {
-				// 	const FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(GMaxRHIFeatureLevel);
+				// FCanvas Canvas(RiveRenderTargetResource, nullptr, FGameTime(), GMaxRHIFeatureLevel);
+				// Canvas.Clear(DebugColor);
 				//
-				// 	FRDGTextureRef InputTexture = RiveRenderTargetResource->GetRenderTargetTexture(GraphBuilder);
-				// 	FRDGTextureRef OutputTexture = RiveSlateRenderTargetResource->GetRenderTargetTexture(GraphBuilder);
-				//
-				// 	FRDGDrawTextureInfo DrawTextureInfo;
-				// 	DrawTextureInfo.Size = RiveRenderTargetResource->GetSizeXY();
-				//
-				// 	//AddDrawTexturePass(GraphBuilder, GlobalShaderMap, InputTexture, OutputTexture, DrawTextureInfo);
-				// }
 
-				FCanvas Canvas1(RiveSlateRenderTargetResource, nullptr, FGameTime(), GMaxRHIFeatureLevel);
-				Canvas1.Clear(DebugColor);
-				
-				GraphBuilder.Execute();
-	
-				// Copy to Slate Texture
-				{
-					FSlateTexture2DRHIRef* FinalDestTextureRHITexture = static_cast<FSlateTexture2DRHIRef*>(ViewportRenderTargetTexture);
-	
-					FTexture2DRHIRef FinalDestRHIRef = FinalDestTextureRHITexture->GetRHIRef();
-					FRHITexture2D* FinalDestTexture2D = FinalDestRHIRef->GetTexture2D();
-	
-					FTexture2DRHIRef DestRHIRef = RiveSlateRenderTargetResource->GetRenderTargetTexture();
-					FRHITexture2D* DestTexture2D = DestRHIRef->GetTexture2D();
-	
-					FRHICopyTextureInfo CopyInfo;
-					RHICmdList.CopyTexture(DestTexture2D, FinalDestTexture2D, CopyInfo);
-				}
+				FRiveRendererUtils::CopyTextureRDG(RHICmdList, RiveRenderTargetResource->TextureRHI, RiveSlateRenderTargetResource->TextureRHI);
+
+				const FSlateTexture2DRHIRef* FinalDestTextureRHITexture = static_cast<FSlateTexture2DRHIRef*>(ViewportRenderTargetTexture);
+				const FTexture2DRHIRef FinalDestRHIRef = FinalDestTextureRHITexture->GetRHIRef();
+				FRiveRendererUtils::CopyTextureRDG(RHICmdList, RiveSlateRenderTargetResource->TextureRHI, FinalDestRHIRef);
 			});
 	}
 }

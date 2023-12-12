@@ -6,4 +6,11 @@
 
 class FRiveRendererModule : public IRiveRendererModule
 {
+	virtual void StartupModule() override;
+	virtual void ShutdownModule() override;
+
+	virtual IRiveRenderer* GetRenderer() override;
+
+private:
+	TUniquePtr<IRiveRenderer> RiveRenderer;
 };

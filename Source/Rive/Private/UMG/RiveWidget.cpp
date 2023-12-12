@@ -14,6 +14,15 @@ const FText URiveWidget::GetPaletteCategory()
 }
 #endif
 
+void URiveWidget::SetRiveFile(URiveFile* InRiveFile)
+{
+	RiveFile = InRiveFile;
+	if ( RiveWidget.IsValid() )
+	{
+		RiveWidget->SetRiveFile(RiveFile);
+	}
+}
+
 void URiveWidget::ReleaseSlateResources(bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
@@ -36,7 +45,6 @@ TSharedRef<SWidget> URiveWidget::RebuildWidget()
 	else
 	{
 		RiveWidget = SNew(SRiveWidget, RiveFile);
-
 		return RiveWidget.ToSharedRef();
 	}
 }

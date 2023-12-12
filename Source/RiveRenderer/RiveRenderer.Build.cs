@@ -34,6 +34,10 @@ public class RiveRenderer : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
+				"Engine",
+				"RHI",
+				"RenderCore",
+				"Renderer",
 			}
 		);
 	}

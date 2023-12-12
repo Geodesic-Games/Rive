@@ -3,33 +3,49 @@
 
 #include "RiveFile.h"
 
+#include "IRiveRenderer.h"
+#include "IRiveRendererModule.h"
+#include "RiveRendererUtils.h"
 #include "Engine/TextureRenderTarget2D.h"
 
-namespace Private
+TStatId URiveFile::GetStatId() const
 {
-	UTextureRenderTarget2D* CreateDefaultRenderTarget(FIntPoint InTargetSize)
-	{
-		UTextureRenderTarget2D* const RenderTarget = NewObject<UTextureRenderTarget2D>(GetTransientPackage());
-		RenderTarget->bForceLinearGamma = false;
-		RenderTarget->bAutoGenerateMips = false;
-		RenderTarget->OverrideFormat = EPixelFormat::PF_B8G8R8A8;
-		RenderTarget->ResizeTarget(InTargetSize.X, InTargetSize.Y);
-		return RenderTarget;
-	}
+	RETURN_QUICK_DECLARE_CYCLE_STAT(URiveFile, STATGROUP_Tickables);
+}
 
-	FIntPoint GetRenderTargetSize(UTextureRenderTarget2D* InRenderTarget)
+void URiveFile::Tick(float InDeltaSeconds)
+{
+	if (IsRendering())
 	{
-		check(IsValid(InRenderTarget));
-		return FIntPoint(InRenderTarget->SizeX, InRenderTarget->SizeY);
+		IRiveRenderer* RiveRenderer = IRiveRendererModule::Get().GetRenderer();
+		check(RiveRenderer);
+
+		RiveRenderer->DebugColorDraw(GetRenderTarget(), DebugColor);
+		
+		CountdownRenderingTickCounter--;
 	}
 }
 
+bool URiveFile::IsTickable() const
+{
+	return FTickableGameObject::IsTickable();
+}
+
+bool URiveFile::IsRendering() const
+{
+	return CountdownRenderingTickCounter > 0;
+}
+
+void URiveFile::RequestRendering()
+{
+	CountdownRenderingTickCounter = CountdownRenderingTicks;
+}
 
 void URiveFile::Initialize()
 {
 	if (bIsInitialized == false)
 	{
-		RenderTarget = Private::CreateDefaultRenderTarget({1980, 1080});
+		RenderTarget = FRiveRendererUtils::CreateDefaultRenderTarget({1980, 1080});
 		
 		bIsInitialized = true;
 	}

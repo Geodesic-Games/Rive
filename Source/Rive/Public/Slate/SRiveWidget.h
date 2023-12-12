@@ -22,8 +22,12 @@ public:
 
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs, TSoftObjectPtr<URiveFile> InRiveFile);
+
+	void SetRiveFile(URiveFile* InRiveFile);
 	
 private:
 	/** Reference to Avalanche View */
 	TSharedPtr<SRiveWidgetView> RiveWidgetView;
+
+	TSoftObjectPtr<URiveFile> RiveFile;
 };
