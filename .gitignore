@@ -1,3 +1,5 @@
+.vs/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -51,6 +53,8 @@
 *.FileListAbsolute.txt
 *.idb
 *.vsidx
+*.iobj
+*.ipdb
 
 Binaries/*
 Intermediate/*
