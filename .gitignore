@@ -53,8 +53,7 @@
 *.iobj
 *.ipdb
 
-Binaries/*
 Intermediate/*
+# Binaries/*
 
-# Temp Exeption 
-!ExampleLibrary.dll
+!/.gitignore
