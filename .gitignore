@@ -54,6 +54,6 @@
 *.ipdb
 
 Intermediate/*
-# Binaries/*
+Binaries/*
 
 !/.gitignore
