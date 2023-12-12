@@ -18,12 +18,14 @@ public class RiveEditor : ModuleRules
         PrivateDependencyModuleNames.AddRange(
             new string[]
             {
+                "AssetDefinition",
                 "CoreUObject",
                 "Engine",
                 "Rive",
                 "Slate",
                 "SlateCore",
                 "UnrealEd",
+                "PropertyEditor",
             }
         );
     }
