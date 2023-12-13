@@ -8,13 +8,25 @@
 
 class UTextureRenderTarget2D;
 
+USTRUCT(Blueprintable)
+struct FRiveStateMachineEvent
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Rive)
+	FIntPoint MousePosition = FIntPoint(0, 0);
+};
+
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class RIVE_API URiveFile : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRiveStatMachineDelegate, FRiveStateMachineEvent, RiveStateMachineEvent);
+	
 public:
 	//~ Begin FTickableGameObject
 	virtual TStatId GetStatId() const override;
@@ -38,8 +50,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = Rive)
 	uint32 CountdownRenderingTicks = 5;
 
+	// This Event is triggered any time new LiveLink data is available, including in the editor
+	UPROPERTY(BlueprintAssignable, Category = "LiveLink")
+	FRiveStatMachineDelegate OnRiveStatMachineDelegate;
+
+
+	UFUNCTION(BlueprintPure, Category = Rive)
 	UTextureRenderTarget2D* GetRenderTarget() const;
 
+	UFUNCTION(BlueprintPure, Category = Rive)
 	FLinearColor GetDebugColor() const;
 
 private:

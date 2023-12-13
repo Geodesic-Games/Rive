@@ -19,7 +19,7 @@ class RIVE_API URiveWidget : public UWidget
 
 public:
 	/** Reference to Ava Blueprint Asset */
-	UPROPERTY(EditAnywhere, Category = Avalanche)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Rive)
 	TObjectPtr<URiveFile> RiveFile;
 
 	void SetRiveFile(URiveFile* InRiveFile);
