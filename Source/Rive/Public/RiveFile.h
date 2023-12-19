@@ -7,6 +7,7 @@
 #include "RiveFile.generated.h"
 
 class UTextureRenderTarget2D;
+class URiveArtboard;
 
 USTRUCT(Blueprintable)
 struct FRiveStateMachineEvent
@@ -26,6 +27,10 @@ class RIVE_API URiveFile : public UObject, public FTickableGameObject
 	GENERATED_BODY()
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRiveStatMachineDelegate, FRiveStateMachineEvent, RiveStateMachineEvent);
+
+public:
+	UPROPERTY()
+	TArray<uint8> TempFileBuffer;
 	
 public:
 	//~ Begin FTickableGameObject
@@ -67,6 +72,9 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<UTextureRenderTarget2D> RenderTarget;
+
+	UPROPERTY()
+	TObjectPtr<URiveArtboard> RiveArtboard;
 
 	bool bIsInitialized = false;
 

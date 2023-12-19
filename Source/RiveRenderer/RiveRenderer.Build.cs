@@ -1,9 +1,11 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class RiveRenderer : ModuleRules
 {
+	
 	public RiveRenderer(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -13,7 +15,6 @@ public class RiveRenderer : ModuleRules
 				// ... add public include paths required here ...
 			}
 		);
-				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {

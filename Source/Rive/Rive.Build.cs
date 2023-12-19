@@ -44,7 +44,8 @@ public class Rive : ModuleRules
 				"RHI",
 				"RenderCore",
 				"Renderer",
-				"UMG"
+				"UMG",
+				"RiveLibrary"
 			}
 			);
 		

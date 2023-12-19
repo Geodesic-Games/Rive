@@ -5,6 +5,7 @@
 
 #include "IRiveRenderer.h"
 #include "IRiveRendererModule.h"
+#include "RiveArtboard.h"
 #include "RiveRendererUtils.h"
 #include "Engine/TextureRenderTarget2D.h"
 
@@ -48,6 +49,12 @@ void URiveFile::Initialize()
 		RenderTarget = FRiveRendererUtils::CreateDefaultRenderTarget({1980, 1080});
 		
 		bIsInitialized = true;
+	}
+
+	//if (RiveArtboard.IsNull())
+	{
+		RiveArtboard = NewObject<URiveArtboard>(this);
+		RiveArtboard->LoadNativeArtboard(TempFileBuffer);
 	}
 }
 

@@ -81,7 +81,7 @@ FSlateShaderResource* FRiveSlateViewport::GetViewportRenderTargetTexture() const
 	return ViewportRenderTargetTexture ? ViewportRenderTargetTexture->GetSlateResource() : nullptr;
 }
 
-PRAGMA_DISABLE_OPTIMIZATION
+UE_DISABLE_OPTIMIZATION
 void FRiveSlateViewport::Tick( const FGeometry& AllottedGeometry, double InCurrentTime, float DeltaTime )
 {
 	TSharedPtr<SWindow> ParentWindow = WidgetViewWeakPtr.Pin()->GetParentWindow();
@@ -118,7 +118,7 @@ void FRiveSlateViewport::Tick( const FGeometry& AllottedGeometry, double InCurre
 			});
 	}
 }
-PRAGMA_ENABLE_OPTIMIZATION
+UE_ENABLE_OPTIMIZATION
 
 bool FRiveSlateViewport::RequiresVsync() const
 {
